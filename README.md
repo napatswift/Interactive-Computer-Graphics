@@ -10,7 +10,7 @@
   - [สายท่อกราฟิกส์](#สายท่อกราฟิกส์)
     - [Vertex Processing](#vertex-processing)
     - [Primitive Processing](#primitive-processing)
-    - [Fragment Generation](#fragment-generation)
+    - [Fragment Generation or Rasterization](#fragment-generation-or-rasterization)
     - [Fragment Processing](#fragment-processing)
     - [Screen Sample Operations](#screen-sample-operations)
 - [การเรนเดอร์ด้วย OpenGL](#การเรนเดอร์ด้วย-opengl)
@@ -24,10 +24,12 @@
   - [Depth Buffer](#depth-buffer)
   - [Depth Test](#depth-test)
   - [Depth Buffer in GLUT](#depth-buffer-in-glut)
+  - [Face Culling](#face-culling)
 - [Linear Algebra for Graphics](#linear-algebra-for-graphics)
   - [Point, Vector, and Scalar](#point-vector-and-scalar)
   - [Vector Operations](#vector-operations)
 - [3D Tranformation in OpenGL](#3d-tranformation-in-opengl)
+- [Lighting in OpenGL](#lighting-in-opengl)
 
 # การโปรแกรมกราฟิกส์เบื้องต้น
 
@@ -48,7 +50,7 @@
 
 ส่วนถัดไปในสายห่อกราฟิกส์เป็นส่วน Primitive Processing ซึ่งจะนำข้อมูลที่คำนวณได้จากส่วนก่อนหน้ามาประกอบกันเป็นรูปทรงเรขาคณิตพื้นฐานตามที่กำหนดไว้ เช่น สี่เหลี่ยม สามเหลี่ยม หรือเส้นตรง เป็นต้น 
 
-### Fragment Generation
+### Fragment Generation or Rasterization
 
 ข้อมูลรูปทรงเรขาคณิตพื้นฐานจะถูกส่งผ่านสายท่อไปยังส่วน Fragment Generation หรือ Rasterization เพื่อใช้คำนวณหาองค์ประกอบย่อยที่มีรูปทรงสี่เหลี่ยมจัตุรัสขนาดเล็กที่เรียกว่าแฟรกเมนต์ (fragment) ที่จะปรากฏอยู่ภายในรูปทรงเรขาคณิตพื้นฐานที่กำหนด โดยถูกส่งผ่านออกมาในรูปของสายข้อมูลแฟรกเมนต์ (Fragment Strearm)
 
@@ -204,6 +206,14 @@ glEnable(GL_DEPTH_TEST)
 glutMainLoop()
 ```
 
+## Face Culling
+
+การไม่วาดด้านของ poligons ที่ไม่ต้องการ จากว่า poligons มีสองหน้าคือ หน้าและหลัง เวลาวาดจะหันด้านหน้าออกมาจึงบางครั้งไม่ต้องการส่งข้อมูลเข้าไป rasterize ออกมาเป็น fragment เนื่องจากว่าเสียเวลาในการคำนวณด้านที่มองไม่เห็น หรือใช้ face culling เพื่อช่วยการทำเอฟเฟกต์เช่น มองเห็นภาพภายนอกจากมุมภายในวัตถุ โดยการสั่งกับ OpenGL 
+
+ผ่านคำสั่ง `glCullFace(mode)` โดยโหมดมีได้คือ `GL_FRONT` คือไม่วาดด้านหน้า `GL_BACK` คือไม่วาดด้านหลัง `GL_FORNT_AND_BACK` คือไม่วาดด้านหน้าและหลัง ก่อนจะใช้ให้ทำการเปิด `glEnable(GL_CULL_FACE)` ก่อน และคำสั่งนี้ห้ามเรียกภายใน `glBegin()` และ `glEnd()`
+
+การจัดว่า poligon ใดถือว่าหันหน้าให้เรานั้นจะดูว่าจุดมุมเรียงกันตามแนวทวนเข็มหรือตามเข็มนาฬิกา สามารถตั้งค่าผ่าน `glFrontFace(mode)` โดยที่ `GL_CCW` คือทวนเข็ม และ `GL_CW` คือตามเข็ม มีีทวนเข็มเป็นค่าเริ่มต้น
+
 # Linear Algebra for Graphics
 
 ความรู้ทางพีชคณิตที่จำเป็นต่อการสร้างงานกราฟิกส์
@@ -219,3 +229,13 @@ glutMainLoop()
 ...
 
 # 3D Tranformation in OpenGL
+
+# Lighting in OpenGL
+
+Illumination คือ การถ่ายเทของพลังงานแสงจากแหล่งกำเนิดระหว่างจุดผ่านทางตรงและทางอ้อม
+
+Lighting คือ กระบวนการคำนวณความเข้มของสีด้วยสมการต่าง ๆ
+
+Shading คือ การกำหนดค่าสีให้กับ fragment เช่นการ lighting, สีจากรูปภาฟ หรือทั้งสอง
+
+
